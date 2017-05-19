@@ -264,3 +264,8 @@ __pycache__/
 rand.txt
 brute.txt
 sort_out.txt
+
+# matlab files
+*.m
+*.asv
+*.mat
