@@ -30,7 +30,7 @@ using namespace std;
 const static int PERSON = 2;
 
 // 每个人的需求数
-const static int PER_REQUEST = 10;
+const static int PER_REQUEST = 5;
 
 // 每个人满意度的和
 const static int SUM_SATISFY = 100;
@@ -40,7 +40,7 @@ const static int MAX_CONSUME = 1000;
 //
 const static double A = 1;
 const static double B = 5;
-const static double C = 1;
+const static double C = 0.7;
 
 // for debug
 template<typename T>
@@ -150,10 +150,10 @@ bool cmp(pair<int, double> A, pair<int, double> B) {
 }
 
 int main() {
-	if (!generate_rand()) {
+	/*if (!generate_rand()) {
 		cout << "Generate rand matrix failed" << endl;
 		return 0;
-	}
+	}*/
 	ll sum_consume = 0;
 	vector<pair<int, int> > data = read_data(sum_consume);
 	cout << sum_consume << endl;
