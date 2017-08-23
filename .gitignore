@@ -264,6 +264,7 @@ __pycache__/
 rand.txt
 brute.txt
 sort_out.txt
+score.txt
 
 # matlab files
 *.m
