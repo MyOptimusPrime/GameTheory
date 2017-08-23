@@ -24,10 +24,10 @@ using namespace std;
 
 
 // 总共的人数
-const static int person = 1000;
+const static int person = 2;
 
 // 每个人的需求数
-const static int per_request = 10;
+const static int per_request = 5;
 
 // 每个人满意度的和
 const static int SUM_SATISFY = 100;
@@ -133,11 +133,11 @@ double check_pimax(const vector<pair<int, int> > & data, bool gameri, int i, int
 		return p_later;
 }
 
-void dealwith(int PERSON, int PER_REQUEST) {
+int main() {
 	//产生随机矩阵
-	/*if (!generate_rand(PERSON, PER_REQUEST)) {
-		cout << "Generate rand matrix failed" << endl;
-		return;
+	/*if (!generate_rand(person, per_request)) {
+	cout << "Generate rand matrix failed" << endl;
+	return 0;
 	}*/
 	//读取随机矩阵
 	ll sum_consume = 0;
@@ -147,7 +147,7 @@ void dealwith(int PERSON, int PER_REQUEST) {
 	//初始化
 	vector<bool> gamer;
 	gamer.clear();
-	for (int i = 0; i < PERSON*PER_REQUEST; i++) {
+	for (int i = 0; i < person*per_request; i++) {
 		//gamer.pb(false);
 		gamer.pb(true);
 	}
@@ -156,22 +156,22 @@ void dealwith(int PERSON, int PER_REQUEST) {
 	double result_tmp = 0;
 	cur_sa_sum = cur_con_sum = cur_sa_sum_2 = 0;
 	cur_sa_per_sum.clear();
-	cur_sa_per_sum.resize(PERSON);
-	initialize(data, gamer, PER_REQUEST);
+	cur_sa_per_sum.resize(person);
+	initialize(data, gamer, per_request);
 
 	//主循环迭代
 	while (!flag) {
 		flag = true;
-		for (int i = 0; i < PERSON * PER_REQUEST; i++) {
-			double tmp = check_pimax(data, gamer[i], i, sum_consume, PERSON, PER_REQUEST);
+		for (int i = 0; i < person * per_request; i++) {
+			double tmp = check_pimax(data, gamer[i], i, sum_consume, person, per_request);
 			if (tmp > -9) {
 
 				cur_sa_sum -= gamer[i] ? data[i].first : -data[i].first;
 				cur_con_sum -= gamer[i] ? data[i].second : -data[i].second;
 
-				cur_sa_sum_2 -= cur_sa_per_sum[i / PER_REQUEST] * cur_sa_per_sum[i / PER_REQUEST];
-				cur_sa_per_sum[i / PER_REQUEST] -= gamer[i] ? data[i].first : -data[i].first;
-				cur_sa_sum_2 += cur_sa_per_sum[i / PER_REQUEST] * cur_sa_per_sum[i / PER_REQUEST];
+				cur_sa_sum_2 -= cur_sa_per_sum[i / per_request] * cur_sa_per_sum[i / per_request];
+				cur_sa_per_sum[i / per_request] -= gamer[i] ? data[i].first : -data[i].first;
+				cur_sa_sum_2 += cur_sa_per_sum[i / per_request] * cur_sa_per_sum[i / per_request];
 
 				gamer[i] = !gamer[i];
 				step++;
@@ -183,12 +183,8 @@ void dealwith(int PERSON, int PER_REQUEST) {
 			}
 		}
 	}
-	double result = calc_p(data, sum_consume, PERSON, PER_REQUEST);
+	double result = calc_p(data, sum_consume, person, per_request);
 	cout << result << endl;
 	getchar();
-}
-
-int main() {
-	
 	return 0;
 }
