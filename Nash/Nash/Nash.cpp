@@ -140,16 +140,23 @@ int main() {
 	return 0;
 	}*/
 	//读取随机矩阵
+	
 	ll sum_consume = 0;
 	vector<pair<int, int> > data = read_data(sum_consume);
 	//寻找过程
 
 	//初始化
 	vector<bool> gamer;
+	vector<double> score;
 	gamer.clear();
+	score.clear();
 	for (int i = 0; i < person*per_request; i++) {
 		//gamer.pb(false);
 		gamer.pb(true);
+	}
+	ll max_iter = 1LL << (person * per_request);
+	for (int i = 0; i < max_iter; i++) {
+		score.pb(0);
 	}
 	bool flag = false;
 	long long step = 0;
@@ -160,6 +167,8 @@ int main() {
 	initialize(data, gamer, per_request);
 
 	//主循环迭代
+	int position = max_iter - 1;
+	cout << position << endl;
 	while (!flag) {
 		flag = true;
 		for (int i = 0; i < person * per_request; i++) {
@@ -174,6 +183,11 @@ int main() {
 				cur_sa_sum_2 += cur_sa_per_sum[i / per_request] * cur_sa_per_sum[i / per_request];
 
 				gamer[i] = !gamer[i];
+				int tmpgamer = gamer[i];
+				tmpgamer = tmpgamer * 2 - 1;
+				position += tmpgamer * pow(2, i);
+				cout << position << endl;
+				score[position] = tmp;
 				step++;
 				flag = false;
 				if (tmp - result_tmp > 0.01) {
@@ -183,6 +197,15 @@ int main() {
 			}
 		}
 	}
+	ofstream out("C:\\Users\\CEN-Graduate\\Source\\Repos\\GameTheory\\Force\\Force\\score.txt");
+	if (!out.is_open()) {
+		cout << "Failed to open score.txt" << endl;
+		return 0;
+	}
+	for (int i = 0; i < max_iter; i++) {
+		out << i << '\t' << score[i] << endl;
+	}
+	out.close();
 	double result = calc_p(data, sum_consume, person, per_request);
 	cout << result << endl;
 	getchar();
