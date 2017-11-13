@@ -24,7 +24,7 @@ using namespace std;
 
 
 // 总共的人数
-const static int person = 2;
+const static int person = 5;
 
 // 每个人的需求数
 const static int per_request = 5;
@@ -68,7 +68,7 @@ bool generate_rand(int PERSON, int PER_REQUEST) {
 		ev.clear();
 		int cur_sum = 0;
 		for (int req = 1; req <= PER_REQUEST; ++req) {
-			int satisfy = rand() % (SUM_SATISFY-20) + 20; //
+			int satisfy = rand() % (SUM_SATISFY - 20) + 20; //
 			int consume = rand() % MAX_CONSUME + 1; // 1 - MAX_CONSUME
 			cur_sum += satisfy;
 			ev.pb(mp(satisfy, consume));
@@ -80,13 +80,19 @@ bool generate_rand(int PERSON, int PER_REQUEST) {
 			if (req == PER_REQUEST) {
 				satisfy = left;
 			}
-			out << satisfy << '\t' << ev[req - 1].second << endl;
+			ev[req - 1].first = satisfy;
+			// out << satisfy << '\t' << ev[req - 1].second << endl;
 			left -= satisfy;
+		}
+		sort(ev.begin(), ev.end());
+		for (int req = PER_REQUEST - 1; req >= 0;  -- req) {
+			out << ev[req].first << '\t' << ev[req].second << endl;
 		}
 	}
 	out.close();
 	return true;
 }
+
 
 vector<pair<int, int> > read_data(ll &consume_sum) {
 	vector<pair<int, int> > ans;
@@ -135,10 +141,10 @@ double check_pimax(const vector<pair<int, int> > & data, bool gameri, int i, int
 
 int main() {
 	//产生随机矩阵
-	/*if (!generate_rand(person, per_request)) {
+	if (!generate_rand(person, per_request)) {
 	cout << "Generate rand matrix failed" << endl;
 	return 0;
-	}*/
+	}
 	//读取随机矩阵
 	
 	ll sum_consume = 0;
@@ -147,17 +153,12 @@ int main() {
 
 	//初始化
 	vector<bool> gamer;
-	vector<double> score;
 	gamer.clear();
-	score.clear();
 	for (int i = 0; i < person*per_request; i++) {
 		//gamer.pb(false);
 		gamer.pb(true);
 	}
 	ll max_iter = 1LL << (person * per_request);
-	for (int i = 0; i < max_iter; i++) {
-		score.pb(0);
-	}
 	bool flag = false;
 	long long step = 0;
 	double result_tmp = 0;
@@ -187,7 +188,6 @@ int main() {
 				tmpgamer = tmpgamer * 2 - 1;
 				position += tmpgamer * pow(2, i);
 				cout << position << endl;
-				score[position] = tmp;
 				step++;
 				flag = false;
 				if (tmp - result_tmp > 0.01) {
@@ -197,15 +197,15 @@ int main() {
 			}
 		}
 	}
-	ofstream out("C:\\Users\\CEN-Graduate\\Source\\Repos\\GameTheory\\Force\\Force\\score.txt");
-	if (!out.is_open()) {
-		cout << "Failed to open score.txt" << endl;
-		return 0;
-	}
-	for (int i = 0; i < max_iter; i++) {
-		out << i << '\t' << score[i] << endl;
-	}
-	out.close();
+	//ofstream out("C:\\Users\\CEN-Graduate\\Source\\Repos\\GameTheory\\Force\\Force\\score.txt");
+	//if (!out.is_open()) {
+	//	cout << "Failed to open score.txt" << endl;
+	//	return 0;
+	//}
+	//for (int i = 0; i < max_iter; i++) {
+	//	out << i << '\t' << score[i] << endl;
+	//}
+	//out.close();
 	double result = calc_p(data, sum_consume, person, per_request);
 	cout << result << endl;
 	getchar();
