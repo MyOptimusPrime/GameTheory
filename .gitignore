@@ -268,7 +268,6 @@ score.txt
 EB.txt
 
 # matlab files
-*.m
 *.asv
 *.mat
 *.fig
