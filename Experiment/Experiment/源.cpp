@@ -19,7 +19,7 @@ using namespace std;
 
 
 // 总共的人数
-const static int person = 1000;
+const static int person = 100;
 
 // 每个人的需求数
 const static int per_request = 10;
@@ -41,10 +41,12 @@ vector<double> cur_sa_per_sum;
 vector<bool> gamer;
 vector<pair<int, int> > Data;
 vector<double> p;
+double punishfactor = 5;
 ll sum_consume;
 vector<vector<int>> EmployerBenefit;
 
 void initialize() {
+	C = 1;
 	cur_sa_sum = cur_con_sum = cur_sa_sum_2 = 0;
 	cur_sa_per_sum.clear();
 	cur_sa_per_sum.resize(person);
@@ -192,10 +194,10 @@ int FindEB_NPO(int i, vector<bool> BackupGamer) {
 void run_punish(int i, int j) {
 	for (double pAdjust = 0.1; pAdjust < 1; pAdjust += 0.1) {
 		for (int k = 0; k < per_request; k++) {
-			p[i * per_request + k] -= (k == j) ? pAdjust : -pAdjust;
+			p[i * per_request + k] -= (k == j) ? pAdjust : -punishfactor * pAdjust;
 			cur_con_sum -= (k == j) ? 
-				Data[i * per_request + k].second * pAdjust : 
-				-Data[i * per_request + k].second * pAdjust;
+				Data[i * per_request + k].second * pAdjust * punishfactor :
+				-Data[i * per_request + k].second * pAdjust * punishfactor;
 		}	
 		run_game();
 		if (gamer[i * per_request + j])
@@ -221,63 +223,67 @@ int FindEB_PO(int i, vector<bool> BackupGamer) {
 }
 
 int main() {
-	//产生随机矩阵
-	if (!generate_rand()) {
-		cout << "Generate rand matrix failed" << endl;
-		return 0;
-	}
 
-	read_data();//读取随机矩阵
+	//for (int round = 1; round <= 5; round++) {
+		//cout << round << endl;
+		//产生随机矩阵
+		if (!generate_rand()) {
+			cout << "Generate rand matrix failed" << endl;
+			return 0;
+		}
 
-	initialize();//初始化
+		read_data();//读取随机矩阵
 
-	run_game();//博弈初次运行获得原开发方案
+		initialize();//初始化
 
-	vector<int> PersonBenefit;
-	vector<bool> BackupGamer = gamer;
-	C = 0.5;
-    run_game();
-	ofstream out("EB.txt");
-	for (int i = 0; i < person; i++) {
-		cout << i;
-		PersonBenefit.clear();
-		PersonBenefit.pb(0);
-		PersonBenefit.pb(FindEB_PL(i));
-        PersonBenefit.pb(FindEB_NPO(i, BackupGamer));
-		/*out << BackupGamer[i * per_request + 0] << BackupGamer[i * per_request + 1]
-			<< BackupGamer[i * per_request + 2] << BackupGamer[i * per_request + 3]
-			<< BackupGamer[i * per_request + 4] << BackupGamer[i * per_request + 5]
-			<< BackupGamer[i * per_request + 6] << BackupGamer[i * per_request + 7]
-			<< BackupGamer[i * per_request + 8] << BackupGamer[i * per_request + 9] << '\t'
-			<< gamer[i * per_request + 0] << gamer[i * per_request + 1]
-			<< gamer[i * per_request + 2] << gamer[i * per_request + 3]
-			<< gamer[i * per_request + 4] << gamer[i * per_request + 5]
-			<< gamer[i * per_request + 6] << gamer[i * per_request + 7]
-			<< gamer[i * per_request + 8] << gamer[i * per_request + 9] << '\t'
-			<< PersonBenefit[0] << '\t' << PersonBenefit[1] << '\t' << PersonBenefit[2] << '\t';*/
+		run_game();//博弈初次运行获得原开发方案
 
-		vector<bool> backup_gamer = gamer;
-		double backup_cur_con_sum = cur_con_sum;
-		vector<double> backup_p = p;
+		vector<int> PersonBenefit;
+		vector<bool> BackupGamer = gamer;
+		C = 0.5;
+		run_game();
+		ofstream out("EB.txt", ios::app);
+		for (int i = 0; i < person; i++) {
+			cout << i << '\t';
+			PersonBenefit.clear();
+			PersonBenefit.pb(0);
+			PersonBenefit.pb(FindEB_PL(i));
+			PersonBenefit.pb(FindEB_NPO(i, BackupGamer));
+			/*out << BackupGamer[i * per_request + 0] << BackupGamer[i * per_request + 1]
+				<< BackupGamer[i * per_request + 2] << BackupGamer[i * per_request + 3]
+				<< BackupGamer[i * per_request + 4] << BackupGamer[i * per_request + 5]
+				<< BackupGamer[i * per_request + 6] << BackupGamer[i * per_request + 7]
+				<< BackupGamer[i * per_request + 8] << BackupGamer[i * per_request + 9] << '\t'
+				<< gamer[i * per_request + 0] << gamer[i * per_request + 1]
+				<< gamer[i * per_request + 2] << gamer[i * per_request + 3]
+				<< gamer[i * per_request + 4] << gamer[i * per_request + 5]
+				<< gamer[i * per_request + 6] << gamer[i * per_request + 7]
+				<< gamer[i * per_request + 8] << gamer[i * per_request + 9] << '\t'
+				<< PersonBenefit[0] << '\t' << PersonBenefit[1] << '\t' << PersonBenefit[2] << '\t';*/
 
-		PersonBenefit.pb(FindEB_PO(i, BackupGamer));
+			vector<bool> backup_gamer = gamer;
+			double backup_cur_con_sum = cur_con_sum;
+			vector<double> backup_p = p;
 
-		/*out << gamer[i * per_request + 0] << gamer[i * per_request + 1]
-			<< gamer[i * per_request + 2] << gamer[i * per_request + 3]
-			<< gamer[i * per_request + 4] << gamer[i * per_request + 5]
-			<< gamer[i * per_request + 6] << gamer[i * per_request + 7]
-			<< gamer[i * per_request + 8] << gamer[i * per_request + 9] << '\t'
-			<< PersonBenefit[3]<< endl;*/
+			PersonBenefit.pb(FindEB_PO(i, BackupGamer));
 
-        gamer = backup_gamer;
-		cur_con_sum = backup_cur_con_sum;
-		p = backup_p;
+			/*out << gamer[i * per_request + 0] << gamer[i * per_request + 1]
+				<< gamer[i * per_request + 2] << gamer[i * per_request + 3]
+				<< gamer[i * per_request + 4] << gamer[i * per_request + 5]
+				<< gamer[i * per_request + 6] << gamer[i * per_request + 7]
+				<< gamer[i * per_request + 8] << gamer[i * per_request + 9] << '\t'
+				<< PersonBenefit[3]<< endl;*/
 
-		out << PersonBenefit[0] << '\t' << PersonBenefit[1] << '\t' 
-			<< PersonBenefit[2] << '\t' << PersonBenefit[3] << endl;
+			gamer = backup_gamer;
+			cur_con_sum = backup_cur_con_sum;
+			p = backup_p;
 
-		EmployerBenefit.pb(PersonBenefit);
-	}
-	out.close();
+			out << PersonBenefit[0] << '\t' << PersonBenefit[1] << '\t'
+				<< PersonBenefit[2] << '\t' << PersonBenefit[3] << endl;
+
+			EmployerBenefit.pb(PersonBenefit);
+		}
+		out.close();
+	//}
 	return 0;
 }
