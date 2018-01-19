@@ -265,9 +265,9 @@ rand.txt
 brute.txt
 sort_out.txt
 score.txt
+EB.txt
 
 # matlab files
-*.m
 *.asv
 *.mat
 *.fig
