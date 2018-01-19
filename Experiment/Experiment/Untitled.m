@@ -22,8 +22,8 @@ EBP =  PSO * D + (1-PSO) * B;
 EBNP = PSO * C + (1-PSO) * A;
 PEP(k) = sum((sign(EBP - EBNP) + 1)/2)/L;
 PSO = [0.4:0.035:0.98,0.99];
-plot(PSO,PEP)
-axis([0 0.99 0 1])
+plot(PSO,PEP * 0.3)
+axis([0.3 0.99 0 0.3])
 hold on
 
 h1 = histogram(NE);
@@ -58,4 +58,4 @@ EBP =  PSO * D + (1-PSO) * B;
 EBNP = PSO * C + (1-PSO) * A;
 PEP(k) = sum((sign(EBP - EBNP) + 1)/2)/L;
 PSO = [0.4:0.035:0.98,0.99];
-plot(PSO,PEP)
+plot(PSO,PEP * 0.3)
