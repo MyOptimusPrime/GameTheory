@@ -261,11 +261,7 @@ __pycache__/
 *.pyc
 
 # program output
-rand.txt
-brute.txt
-sort_out.txt
-score.txt
-EB.txt
+*.txt
 
 # matlab files
 *.asv
