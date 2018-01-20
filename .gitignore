@@ -262,6 +262,7 @@ __pycache__/
 
 # program output
 *.txt
+*.xlsx
 
 # matlab files
 *.asv

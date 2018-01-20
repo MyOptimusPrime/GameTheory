@@ -28,10 +28,25 @@ int main(){
 	while (in >> ID) {
 		PointList.push_back(ID);
 	}
-	char buffer[10];
-	for (int i = 1; i <= ReList.size(); i++) {
-		replace(PointList.begin(), PointList.end(), '2', '1');
+	in.close();
+	for (int i = 0; i < ReList.size(); i++) {
+		for (int j = 0; j < PointList.size(); j++) {
+			if (PointList[j] == ReList[i]) PointList[j] = std::to_string(i);
+		}
 	}
-	getchar();
+	/*int NameID = 0;
+	for (int i = 0; i < PointList.size() - 1; i++) {
+		if (PointList[i] == PointList[i + 1]) PointList[i] = std::to_string(NameID);
+		else {
+			PointList[i] = std::to_string(NameID);
+			NameID++;
+		}
+	}*/
+	ofstream out;
+	out.open("PL.txt");
+	for (int j = 0; j < PointList.size(); j++) {
+		out << PointList[j] << endl;
+	}
+	//getchar();
 	return 0;
 }
