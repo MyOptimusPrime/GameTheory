@@ -21,15 +21,15 @@ const static int person = 79;
 
 double A = 1;
 double B = 5;
-double C = 1;
+double C = 0.3;
 
 double cur_sa_sum, cur_con_sum;
 double cur_sa_sum_2;
 vector<double> cur_sa_per_sum;
-vector<bool> gamer;
+vector<bool> gamer, ground_truth;
 vector<vector<pair<int, double>>> PointP;
 vector<int> Consume;
-vector<double> p;
+vector<double> p, normalized_sum_rate;
 int sum_consume;
 vector<vector<int>> EmployerBenefit;
 
@@ -52,17 +52,23 @@ void initialize() {
 	gamer.clear();
 	p.clear();
 	for (int i = 0; i < Consume.size(); i++) {
-		gamer.pb(false);
-		p.pb(1);
+		//gamer.pb(false);
+		gamer.pb(ground_truth[i]);
+		p.pb(1 - normalized_sum_rate[i]);
+		//p.pb(1);
 	}
-	for (int i = 0; i < gamer.size(); i++) update(i);
+	for (int i = 0; i < gamer.size(); i++) 
+		if(gamer[i]) update(i);
 }
 
 void read_data() {
 	PointP.clear();
 	Consume.clear();
+	ground_truth.clear();
+	normalized_sum_rate.clear();
 	int ReID, NameID, consume;
-	double satisfy;
+	double satisfy, rate;
+    bool status;
 	vector<pair<int, double>> ReID_statisy;
 	ReID_statisy.clear();
 	sum_consume = 0;
@@ -70,9 +76,11 @@ void read_data() {
 	ifstream in("requirements_and_cost.txt");
 	if (!in.is_open()) return;
 	sum_consume = 0;
-	while (in >> ReID >> consume) {
+	while (in >> ReID >> consume >> status >> rate) {
 		Consume.pb(consume);
 		sum_consume += consume;
+		ground_truth.pb(status); 
+		normalized_sum_rate.pb(rate);
 	}
 	in.close();
 
@@ -141,9 +149,19 @@ int main() {
 			}
 		}
 	}
+	ofstream out("Elicitation_result_with_rate.txt");
+	double Ground_truthN, Nash_MethodN, MatchedN;
+	Ground_truthN = Nash_MethodN = MatchedN = 0;
 	for (int i = 0; i < Consume.size(); i++) {
-		cout << PointP[i].size() << '\t' << gamer[i] << endl;
+		if (gamer[i] & ground_truth[i]) MatchedN += 1;
+		Ground_truthN += ground_truth[i];
+		Nash_MethodN += gamer[i];
+		out << PointP[i].size() << '\t' << Consume[i] << '\t' << normalized_sum_rate[i] << '\t' << gamer[i] << '\t' << ground_truth[i] << endl;
 	}
-	getchar();
+	out << Ground_truthN << '\t' << Nash_MethodN << '\t' << MatchedN << endl;
+	out << "Precision:" << MatchedN / Nash_MethodN << endl;
+	out << "Recall:" << MatchedN / Ground_truthN << endl;
+	out << "C:" << C << endl;
+	//getchar();
 	return 0;
 }
